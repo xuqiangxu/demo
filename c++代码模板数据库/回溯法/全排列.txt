@@ -1,0 +1,15 @@
+回溯法非重复序列全排列
+
+void backtrack(vector<vector<int>>& ans,vectpr<int> res,int first,int len)
+{
+     if(first==len){
+         ans.push_back(res);
+         return;
+     }
+     for(int i=first;i<len;++i)
+     {
+          swap(res[first],res[i]);
+          backtrack(ans,res,first,len);
+          swap(res[first],res[i]);//回溯
+     }
+}

@@ -1,0 +1,10 @@
+kmp
+a b a b a a a b a b a a
+lps数组
+0 0 1 2 3 1 1 2 3 4 5 6
+next数组
+0 1 1 2 3 4 2 2 3 4 5 2
+0 1 0 1 0 4 2 1 0 1 0 4
+nextval数组
+
+https://blog.csdn.net/qq_51340322/article/details/113687835

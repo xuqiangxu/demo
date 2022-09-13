@@ -1,0 +1,54 @@
+ 加const是因为：
+我们不希望在这个函数中对用来进行赋值的“原版”做任何修改。函数加上const后缀的作用是表明函数本身不会修改类成员变量。
+加上const，对于const的和非const的实参，函数就能接受；如果不加，就只能接受非const的实参。
+另外补充，用引用是因为：
+这样可以避免在函数调用时对实参的一次拷贝，提高了效率。
+ 
+————————————————
+版权声明：本文为CSDN博主「chenmeiqi777」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
+原文链接：https://blog.csdn.net/qq_36770641/article/details/89884807
+
+//对应大顶堆
+struct cmp
+{
+	bool operator() (const int& a,const int& b) const{
+		return a < b;
+	}
+};
+
+//对应小顶堆
+struct cmp
+{
+	bool operator() (const int& a,const int& b) const {
+		return a > b;
+	}
+};
+
+
+priority_queue<int, vector<int>, cmp> q;
+
+/*****************************************
+排序相关
+
+//小->大
+struct cmp
+{
+	bool operator() (const int& a,const int& b) const {
+		return a < b;
+	}
+};
+
+//大到小
+struct cmp
+{
+	bool operator() (const int& a,const int& b) const{
+		return a > b;
+	}
+};
+
+cmp c;
+sort(nums.begin(), nums.end(),c);
+
+set<int, cmp> s;//顺序和排序一样
+
+

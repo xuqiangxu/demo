@@ -1,0 +1,25 @@
+//  a^b
+
+//这是迭代的从左往右推导
+//转换成二进制方便理解
+
+#include <cstdio>
+#include <iostream>
+using namespace std;
+int fast_pow(int a, int b)
+{
+    int ans = 1;
+    base = a;
+    while (b != 0)
+    {
+        if (b & 1 != 0)
+        {
+            ans *= base;
+        }
+        b = b >> 1;
+      //相当于基底
+        base *= base;
+    }
+
+    return ans;
+}

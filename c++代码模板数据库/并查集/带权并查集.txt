@@ -1,0 +1,65 @@
+    vector<int> tree;       // tree[i] 存放节点 i 的父节点下标
+    vector<double> weight;  // weight[i] 存放节点 i 到其父节点的权值
+
+    int find(int n) {
+        if (tree[n] < 0) {
+            return n;
+        }
+        int father = find(tree[n]);
+        weight[n] = weight[n] * weight[tree[n]];    // 更新权值
+        tree[n] = father;       // 路径压缩
+        return father;
+    }
+
+    void merge(int a, int b, double val) {
+        int a_root = find(a);
+        int b_root = find(b);
+        if (a_root == b_root) {
+            return;
+        }
+        tree[a_root] = b_root;      // 合并两个集合
+        weight[a_root] = val * weight[b] / weight[a];   // 更新根节点的权值
+    }
+
+    vector<double> calcEquation(vector<vector<string>>& equations, vector<double>& values, vector<vector<string>>& queries) {
+
+        int size = equations.size();
+        for (int i=0; i<2*size; i++) {
+            tree.push_back(-1);
+            weight.push_back(1.0);
+        }
+
+        unordered_map<string, int> map;     // key: 变量名, val : 该变量对应节点的下标
+        int index = 0;
+        for (int i=0; i<equations.size(); i++) {
+            if (map.count(equations[i][0]) == 0) {  // 若该变量不存在，加入到 map 中，并分配一个下标
+                map[equations[i][0]] = index++;
+            }
+            if (map.count(equations[i][1]) == 0) {
+                map[equations[i][1]] = index++;
+            }
+
+            int a_index = map[equations[i][0]]; // 得到两个变量的节点下标
+            int b_index = map[equations[i][1]];
+
+            merge(a_index, b_index, values[i]); // 合并这两个变量
+        }
+
+        vector<double> ans(queries.size(), -1.0);
+        for (int i=0; i<queries.size(); i++) {
+            if (map.count(queries[i][0]) == 0 || map.count(queries[i][1]) == 0) {   // 只要有没出现过得变量
+                continue;
+            }
+
+            int a_index = map[queries[i][0]];   // 获取该变量所在的节点下标
+            int b_index = map[queries[i][1]];
+
+            int a_root = find(a_index);     // 寻找其所对应的根节点，同时也在执行路径压缩，使之都直接指向根节点
+            int b_root = find(b_index);
+
+            if (a_root == b_root) { // 只有两个节点在同一个集合中，才有可比性
+                ans[i] = weight[a_index] / weight[b_index];
+            }
+        }
+        return ans;
+    }

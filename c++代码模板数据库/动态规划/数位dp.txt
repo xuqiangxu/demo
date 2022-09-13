@@ -1,0 +1,41 @@
+数位DP  常用记忆化搜索
+
+int mask 各位表示0-9各个数是否使用过
+bool isLimit 表示该位是否受限制
+bool isNum 判断是否只含有前导0
+
+例题 
+233
+面试题17.06.2
+600
+902
+1012
+1067
+1397
+
+
+
+模板
+    int dfs(int level, int mask, bool isLimit, bool isNum)
+    {
+        if (level == s.size()) {
+            return isNum;
+        }
+        if (!isLimit && isNum && dp[level][mask] >= 0) {
+            return dp[level][mask];
+        }
+        int res = 0;
+        //跳过数位
+        if (!isNum) res = dfs(level + 1, mask, false, false);
+        for (int i = 1 - isNum, up = isLimit ? s[level] - '0' : 9; i <= up; ++i) {
+            if (((mask >> i) & 1) == 0) {
+                res += dfs(level + 1, mask | 1 << i, isLimit && i == up, true);
+            }
+        }
+        //记录该层 mask(即前面数位使用过的数字组成的掩码)后续组合数 用于记忆化搜索
+        if (!isLimit && isNum) dp[level][mask] = res;
+        return res;
+    }
+
+
+dfs(0, 0, true, false);

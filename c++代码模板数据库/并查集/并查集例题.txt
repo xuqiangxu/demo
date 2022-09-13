@@ -1,0 +1,122 @@
+#include <stdlib.h>
+#include<iostream>
+#include <vector>
+#include <string>
+#include <unordered_map>
+using namespace std;
+
+
+//并查集
+class UF {
+public:
+	UF(int n) {
+		cnt.resize(n);
+		type.resize(n);
+		for (int i = 0; i < n; ++i) {
+			cnt[i] = 1;
+			type[i] = i;
+		}
+	}
+
+	//记录连通块大小
+	vector<int> cnt;
+	//类型数组
+	vector<int> type;
+	//查找根节点
+	int get(int x) {
+		while (x != type[x]) {
+			x = get(type[x]);
+		}
+		return x;
+	}
+	//并操作---可以优化
+	void merge(int x, int y) {
+		x = get(x);
+		y = get(y);
+		if (x == y) return;
+		type[y] = x;
+		cnt[x] += cnt[y];
+	}
+
+};
+
+
+//1,股票名称和类别挂钩
+unordered_map<string, int> mp;
+//2,记录每个人持有股票
+unordered_map<string, vector<int> > holder;
+
+void StockRecommendation() {
+	UF s(1e5);
+	//操作次数
+	int n;
+	cin >> n;
+	//两种操作
+	//输入格式
+	//1 name n  
+	//n个str
+
+	//2 name
+	//类别
+	int idx = 0;
+
+	for (int i = 0; i < n; ++i) {
+		//操作类型
+		int act;
+		cin >> act;
+		//姓名
+		string name;
+		cin >> name;
+		switch (act) {
+		case 1:
+		{
+			int hold_num;
+			cin >> hold_num;
+			//股票名称
+			string temp;
+
+			for (int i = 0; i < hold_num; ++i) {
+				cin >> temp;
+				//确认股票id(类型),将id保存在holder[name]中
+				if (mp.count(temp)) {
+					holder[name].push_back(mp[temp]);
+				}
+				else {
+					++idx;
+					mp[temp] = idx;
+					holder[name].push_back(idx);
+				}
+				//merge 合并区间
+				for (int i = 1; i < holder[name].size(); ++i) {
+					s.merge(holder[name][0], holder[name][i]);
+				}
+			}
+			break;
+		}
+		case 2: {
+			//query 操作
+			//查无此人
+			if (!holder.count(name)) {
+				cout << "error" << endl;
+			}
+			else {
+				//持有股票数量
+				int b = holder[name].size();
+				//该类型连通块大小
+				int type = s.get(holder[name][0]);
+				cout << s.cnt[type] - b << endl;
+			}
+			break;
+		}
+		default: {
+			break;
+		}
+		}
+	}
+}
+
+int main()
+{
+	StockRecommendation();
+	return 0;
+}

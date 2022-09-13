@@ -1,0 +1,4 @@
+mt19937 gen{random_device{}()};                //高性能随机数生成器
+uniform_int_distribution<int> dis(0, n - 1); //均匀分布
+dis(gen);				   //随机数生成
+

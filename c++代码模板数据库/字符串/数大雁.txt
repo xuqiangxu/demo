@@ -1,0 +1,43 @@
+leecode 1419
+俄罗斯方块思想
+每次有完整就消掉一行
+且每个字母高度是非严格递减的;
+
+class Solution {
+public:
+    int minNumberOfFrogs(string croakOfFrogs) {
+        //俄罗斯方块思想
+        int c=0,r=0,o=0,a=0,k=0;
+        int ans = 0;
+        int n = croakOfFrogs.size();
+        if(croakOfFrogs[n-1]!='k') return -1;
+
+        for(char x:croakOfFrogs) {
+            if(x=='c') {
+                ++c;
+            }
+            else if(x=='r') {
+                ++r;
+                if(r>c) return -1;
+            } 
+            else if(x=='o') {
+                ++o;
+                if(o>r) return -1;
+            }
+            else if(x=='a') {
+                ++a;
+                if(a>o) return -1;
+            }
+            else if(x=='k') {
+                if(k>a) return -1;
+                ans = max(c,ans);
+                --c;--r;--o;--a;--k;
+            }
+            else {
+                return -1;
+            }
+        }
+        return ans;
+
+    }
+};

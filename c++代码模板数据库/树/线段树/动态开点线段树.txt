@@ -1,0 +1,115 @@
+//动态开点线段树 即 在不创建不适用的线段区间 减少空间复杂度
+
+class Node {
+public:
+    Node* left;
+    Node* right;
+    int l;
+    int r;
+    int mid;
+    //从左到右的和
+    int v;
+    int add;
+
+    Node(int l, int r) {
+        this->l = l;
+        this->r = r;
+        this->mid = (l + r) >> 1;
+        this->left = this->right = nullptr;
+        //优化修改 lazy tag
+        v = add = 0;
+    }
+};
+
+class SegmentTree {
+private:
+    Node* root;
+
+public:
+    SegmentTree() {
+        root = new Node(1, 1e9);
+    }
+
+    void modify(int l, int r, int v) {
+        modify(l, r, v, root);
+    }
+
+    void modify(int l, int r,int v, Node* node) {.
+        //修改节点
+        if (l > r) return;
+        //所涉及区间包括这个区间 区间v更新
+        if (node->l >= l && node->r <= r)
+        {
+            node->v = v;
+            //打上偷懒印记了 记录区间增加量
+            node->add = v;
+            return;
+        }
+         //可能涉及部分区间 也可能完全不沾边
+        pushdown(node);
+        if (l <= node->mid) modify(l, r, v, node->left);
+        if (r > node->mid) modify(l, r, v, node->right);
+        pushup(node);
+    }
+
+    int query(int l, int r) {
+        return query(l, r, root);
+    }
+
+    int query(int l, int r, Node* node) {
+        if (l > r) return 0;
+        //完全在这个区间内 已经查询到  返回
+        if (node->l >= l && node-> r <= r) return node->v;
+        //不完全在这里 先往下更新
+        pushdown(node);
+        int v = 0;
+        if (l <= node->mid) v = max(v, query(l, r, node->left));
+        if (r > node->mid) v = max(v, query(l, r, node->right));
+        return v;
+    }
+    
+   //从下修改到上面？
+    void pushup(Node* node) {
+        node->v = max(node->left->v, node->right->v);
+    }
+    
+    //修改
+    void pushdown(Node* node) {
+        if (!node->left) node->left = new Node(node->l, node->mid);
+        if (!node->right) node->right = new Node(node->mid + 1, node->r);
+        if (node->add)
+        {
+            Node* left = node->left;
+            Node* right = node->right;
+            left->v = node->add;
+            right->v = node->add;
+            left->add = node->add;
+            right->add = node->add;
+            node->add = 0;
+        }
+    }
+};
+
+class Solution {
+public:
+    vector<int> fallingSquares(vector<vector<int>>& positions) {
+        vector<int> ans;
+        SegmentTree* tree = new SegmentTree();
+        int mx = 0;
+        for (auto& p : positions)
+        {
+            int l = p[0], w = p[1], r = l + w - 1;
+            int h = tree->query(l, r) + w;
+            //历史最大值
+            mx = max(mx, h);
+            ans.push_back(mx);
+            tree->modify(l, r, h);
+        }
+        return ans;
+    }
+};
+
+作者：lcbin
+链接：https://leetcode.cn/problems/falling-squares/solution/-by-lcbin-5rop/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。

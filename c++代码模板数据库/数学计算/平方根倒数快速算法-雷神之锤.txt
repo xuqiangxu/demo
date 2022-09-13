@@ -1,0 +1,17 @@
+float Q_rsqrt( float number ) 
+{ 
+    long i; 
+    float x2, y; 
+    const float threehalfs = 1.5F ;
+    x2 = number * 0.5F ; 
+    y = number ; 
+    i = * ( long * ) &y; // evil floating point bit level hacking 
+    i = 0x5f3759df - ( i >> 1 ); // what the fuck? 
+    y = * ( float * ) &i; 
+    y = y * ( threehalfs - ( x2 * y * y ) ); // 1st iteration 
+//  y = y * ( threehalfs - ( x2 * y * y ) ); // 2nd iteration, this can be removed
+    return y ;
+}
+————————————————
+版权声明：本文为CSDN博主「谁允许你直视本大叔的」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
+原文链接：https://blog.csdn.net/noahzuo/article/details/51555161

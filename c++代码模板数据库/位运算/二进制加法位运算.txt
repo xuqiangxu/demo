@@ -1,0 +1,8 @@
+计算当前 xx 和 yy 的无进位相加结果：answer = x ^ y
+计算当前 xx 和 yy 的进位：carry = (x & y) << 1
+完成本次循环，更新 x = answer，y = carry
+
+作者：LeetCode-Solution
+链接：https://leetcode.cn/problems/JFETK5/solution/er-jin-zhi-jia-fa-by-leetcode-solution-fa6t/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。

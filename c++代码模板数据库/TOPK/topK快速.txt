@@ -1,0 +1,4 @@
+nth_element(arr.begin(), arr.begin() + k, arr.end(), less<int>());		// 第k小，默认为less，可省略
+nth_element(arr.begin(), arr.begin() + k, arr.end(), greater<int>());	// 第k大
+
+//上述是快排思想实现  平均复杂度o(n)
